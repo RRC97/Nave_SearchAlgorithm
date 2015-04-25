@@ -62,14 +62,47 @@ namespace Work
             }
         }
 
+        void repart(out int[] left, out int[] right, int[] array)
+        {
+            left = new int[array.Length / 2];
+            right = new int[array.Length - left.Length];
+            for (int i = 0; i < left.Length; i++)
+            {
+                left[i] = array[i];
+            }
+            for (int i = 0; i < right.Length; i++)
+            {
+                right[i] = array[i + left.Length];
+            }
+        }
+
         void BinarySearch(int[] array, int value)
         {
-            int  pointer = array.Length / 2;
-            while (array[pointer] != value)
-                if (array[pointer] > value)
-                    pointer--;
-                else
-                    pointer++;
+            int[] leftPart, rightPart;
+            int[] part = array;
+            repart(out leftPart, out rightPart, part);
+            int pointer = array.Length / 2;
+            int pointerPart = pointer;
+            while (part[pointerPart] != value)
+            {
+                Console.WriteLine("Pointer global: " + pointer + ", Pointer local: " + pointerPart);
+                
+                if (part[pointerPart] > value)
+                {
+                    pointerPart = leftPart.Length / 2;
+                    part = leftPart;
+                    repart(out leftPart, out rightPart, part);
+                }
+                else if (part[pointerPart] < value)
+                {
+                    pointerPart = rightPart.Length / 2;
+                    part = rightPart;
+                    repart(out leftPart, out rightPart, part);
+                }
+                pointer = array.ToList<int>().IndexOf(part[pointerPart]);
+            }
+            Console.WriteLine("Pointer global: " + pointer + ", Pointer local: " + pointerPart);
+
             MessageBox.Show("A posição do elemento é em " + (pointer + 1) + "º lugar", "Resultado");
         }
 
